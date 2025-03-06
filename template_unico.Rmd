@@ -1,0 +1,27 @@
+---
+output: html_document
+params:
+  dados: null
+  casas: 2
+  beneficio: TRUE
+  tabela: "tab1"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(kableExtra)
+library(dplyr)
+library(htmltools)
+
+# Busca a função do GitHub
+source("https://raw.githubusercontent.com/Bruno44080/compras/refs/heads/main/funcoes_tabelas.R")
+
+tabela <- gerar_tabela(
+  arquivo = params$dados,
+  beneficioME = params$beneficio,
+  casasdecimais = params$casas,
+  tabela = params$tabela
+)
+
+tabela
+```
