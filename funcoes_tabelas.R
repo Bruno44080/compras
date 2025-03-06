@@ -1,4 +1,4 @@
-critica_precos_max <- function(gerar =c('tab1','tab2'),
+gerar_tabela <- function(gerar =c('tab1','tab2'),
                                arquivo = "C:/meu app/dados/carnes.csv",
                                beneficioME=T,
                                casasdecimais = 2){
