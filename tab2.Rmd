@@ -17,7 +17,7 @@ library(scales)
 
 
 critica_precos_max <- function(gerar =c('tab1','tab2'),
-                               arquivo = "C:/meu app/dados/insumos.csv",
+                               arquivo = "C:/meu app/dados/carnes.csv",
                                beneficioME=T,
                                casasdecimais = 2){
   #setwd(pasta)
@@ -197,8 +197,8 @@ critica_precos_max <- function(gerar =c('tab1','tab2'),
                             'precoestimado' = formatar_moeda(ME[,2]),
                             'precomaximo' = formatar_moeda(ME[,1] * ME[,2]))
     
-    which(!idx_ME)
     
+    if(sum(!idx_ME) !=0){
     beneficio2 <- data.frame('item' = sequencia_itens[(2*sum(idx_ME)+1):(length(idx_ME)+sum(idx_ME))],
                             'codigo' = simplify2array((unname(quanti[2,!idx_ME]))),
                             'descricao' = simplify2array((unname(brutos[1,!idx_ME]))),
@@ -208,13 +208,14 @@ critica_precos_max <- function(gerar =c('tab1','tab2'),
                             'precomaximo' = formatar_moeda(itens_df[!idx_ME,1] * itens_df[!idx_ME,2]))
     
     
+    } else beneficio2 <- rep("",7)
     total_AC <- formatar_moeda(sum(AC[,1] * AC[,2]))
     total_ME <- formatar_moeda(sum(ME[,1]*ME[,2]) + sum(itens_df[!idx_ME,1] * itens_df[!idx_ME,2]))
     Totalgeral <- formatar_moeda(sum(AC[,1] * AC[,2]) + sum(ME[,1]*ME[,2]) + sum(itens_df[!idx_ME,1] * itens_df[!idx_ME,2]))
-    tabelao <- rbind(rep('AMPLA CONCORRÊNCIA',n=7),
+    tabelao <- rbind(rep(c('','AMPLA CONCORRÊNCIA'),c(6,1)),
                      ampla_concorrencia,
                      rep(c('','Total',total_AC),c(5,1,1)),
-                     rep('EXCLUSIVO ME',7),
+                     rep(c('','EXCLUSIVO ME'),c(6,1)),
                      beneficio,
                      beneficio2,
                      rep(c('','Total',total_ME),c(5,1,1)),
