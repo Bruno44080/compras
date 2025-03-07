@@ -1,7 +1,10 @@
-gerar_tabela <- function(gerar =c('tab1','tab2'),
-                               arquivo = "C:/meu app/dados/carnes.csv",
-                               beneficioME=T,
-                               casasdecimais = 2){
+library(kableExtra)
+library(dplyr)
+library(htmltools)
+gerar_tabela <- function(gerar ='tab1',
+                         arquivo = "C:/FP_Generator/dados/Carnes 2.csv",
+                         beneficioME=T,
+                         casasdecimais = 2){
   #setwd(pasta)
   brutal <- read.csv(file =arquivo ,header = F,sep = ',',encoding = 'UTF-8')
   
@@ -109,6 +112,8 @@ gerar_tabela <- function(gerar =c('tab1','tab2'),
   larguras_px <- c("420px", "60px", "120px", "60px", "60px", "120px", "180px", "180px")
   
   # Criar tabela com CSS inline para fixar tamanhos
+  if(gerar=='tab1'){
+    
   tabela <- tab1_formatada %>%
     kable(
       format = "html",
@@ -141,6 +146,9 @@ gerar_tabela <- function(gerar =c('tab1','tab2'),
       notation = "none",
       escape = FALSE,
     )
+  tabelinha <- tabela
+  return(tabelinha)
+  }
   
   ## Tabela do valor maximo
   
@@ -228,6 +236,7 @@ gerar_tabela <- function(gerar =c('tab1','tab2'),
       row_spec(
         0:nrow(tabelao),
         extra_css = "border: 1px solid black !important;")
+    tabelinha <- tab_max
     
   }else{
     df_quantitativo <- data.frame('item' = simplify2array(unname(quanti[1,])),
@@ -267,22 +276,7 @@ gerar_tabela <- function(gerar =c('tab1','tab2'),
         0:nrow(df_quantitativo),
         extra_css = "border: 1px solid black !important;"
       )
-    
+    tabelinha <- tab_max
   }
-  tabela
-  tab_max
-  c('tab1','tab2') %in% gerar
-  if('tab1' %in% gerar){
-    if('tab2' %in% gerar){
-      retornar <- list("tabela1" = tabela,
-                       "tabela2" = tab_max)
-      return(retornar)
-    }
-    retornar <- list("tabela1" = tabela)
-    return(retornar)
-  }
-  if('tab2' %in% gerar){
-    retornar<- list("tabela2" = tab_max)
-    return(retornar)
-  }
+  return(tabelinha)
 }
