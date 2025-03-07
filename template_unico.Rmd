@@ -23,5 +23,9 @@ tabela <- gerar_tabela(
   gerar = params$tabela
 )
 
+```
+
+```{r exibir, echo=FALSE}
 tabela
+
 ```
