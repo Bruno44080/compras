@@ -7,7 +7,7 @@ params:
   tabela: "tab1"
 ---
 
-```{r setup, include=FALSE}
+```{r setup, echo=FALSE,warning=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 library(kableExtra)
 library(dplyr)
