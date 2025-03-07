@@ -1,6 +1,6 @@
 install_and_load <- function(packages) {
-  for (pkg in packages) {
-    if (!require(pkg, character.only = TRUE, quietly = TRUE)) {
+  for(pkg in packages) {
+    if(!require(pkg, character.only = TRUE, quietly = TRUE)) {
       message("Instalando pacote: ", pkg)
       install.packages(pkg, dependencies = TRUE)
       library(pkg, character.only = TRUE)
@@ -18,7 +18,7 @@ required_packages <- c(
 install_and_load(required_packages)
 
 # Verificação crítica do Pandoc
-if (!rmarkdown::pandoc_available()) {
+if(!rmarkdown::pandoc_available()) {
   message("\nInstalando Pandoc... (requer privilégios de administrador)")
   tryCatch({
     rmarkdown::install_pandoc()
@@ -46,11 +46,11 @@ files_needed <- c(
 # Download automático dos arquivos
 message("\nBaixando arquivos do GitHub...")
 tryCatch({
-  for (file in files_needed) {
+  for(file in files_needed) {
     file_url <- paste0(github_repo, file)
     dest_file <- file.path(temp_dir, file)
     
-    if (!file.exists(dirname(dest_file))) {
+    if(!file.exists(dirname(dest_file))) {
       dir.create(dirname(dest_file), recursive = TRUE)
     }
     
@@ -60,7 +60,7 @@ tryCatch({
       add_headers("User-Agent" = "R"),
       timeout(15)
     
-    if (http_error(response)) {
+    if(http_error(response)) {
       stop("Falha ao baixar: ", file)
     }
     message("Sucesso: ", file)
