@@ -1,6 +1,10 @@
+# Salve este script como 'executar_app.R' e execute via:
+# Rscript executar_app.R
+
+# Função para verificar e instalar pacotes
 install_and_load <- function(packages) {
-  for(pkg in packages) {
-    if(!require(pkg, character.only = TRUE, quietly = TRUE)) {
+  for (pkg in packages) {
+    if (!require(pkg, character.only = TRUE, quietly = TRUE)) {
       message("Instalando pacote: ", pkg)
       install.packages(pkg, dependencies = TRUE)
       library(pkg, character.only = TRUE)
@@ -18,7 +22,7 @@ required_packages <- c(
 install_and_load(required_packages)
 
 # Verificação crítica do Pandoc
-if(!rmarkdown::pandoc_available()) {
+if (!rmarkdown::pandoc_available()) {
   message("\nInstalando Pandoc... (requer privilégios de administrador)")
   tryCatch({
     rmarkdown::install_pandoc()
@@ -44,23 +48,27 @@ files_needed <- c(
 )
 
 # Download automático dos arquivos
+# Download automático dos arquivos
 message("\nBaixando arquivos do GitHub...")
 tryCatch({
-  for(file in files_needed) {
+  for (file in files_needed) {
     file_url <- paste0(github_repo, file)
     dest_file <- file.path(temp_dir, file)
     
-    if(!file.exists(dirname(dest_file))) {
+    if (!file.exists(dirname(dest_file))) {
       dir.create(dirname(dest_file), recursive = TRUE)
     }
     
+    # CORREÇÃO 1: Fechar parênteses da função GET
     response <- GET(
       file_url,
       write_disk(dest_file, overwrite = TRUE),
       add_headers("User-Agent" = "R"),
       timeout(15)
+    )  # <- Parêntese faltando aqui
     
-    if(http_error(response)) {
+    # CORREÇÃO 2: Mover verificação para fora do GET
+    if (httr::http_error(response)) {
       stop("Falha ao baixar: ", file)
     }
     message("Sucesso: ", file)
@@ -69,17 +77,17 @@ tryCatch({
   unlink(temp_dir, recursive = TRUE)
   stop("Erro crítico:\n", e$message, "\nDiretório limpo: ", temp_dir)
 })
-
-# Execução do aplicativo
-message("\nIniciando aplicativo Shiny...")
-tryCatch({
-  shiny::runApp(
-    appDir = temp_dir,
-    launch.browser = TRUE,
-    quiet = TRUE,
-    display.mode = "normal"
-  )
-}, finally = {
-  message("\nLimpando diretório temporário...")
-  unlink(temp_dir, recursive = TRUE)
-})
+    
+    # Execução do aplicativo
+    message("\nIniciando aplicativo Shiny...")
+    tryCatch({
+      shiny::runApp(
+        appDir = temp_dir,
+        launch.browser = TRUE,
+        quiet = TRUE,
+        display.mode = "normal"
+      )
+    }, finally = {
+      message("\nLimpando diretório temporário...")
+      unlink(temp_dir, recursive = TRUE)
+    })
