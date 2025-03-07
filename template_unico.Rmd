@@ -20,7 +20,7 @@ tabela <- gerar_tabela(
   arquivo = params$dados,
   beneficioME = params$beneficio,
   casasdecimais = params$casas,
-  tabela = params$tabela
+  gerar = params$tabela
 )
 
 tabela
