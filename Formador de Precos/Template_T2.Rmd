@@ -1,0 +1,88 @@
+---
+output: html_document
+params:
+  dados: NULL
+  casas_decimais: 2
+---
+
+```{r setup,echo=F}
+library(shiny)
+library(shinyjs)
+library(dplyr)
+library(kableExtra)
+library(htmltools)
+
+dados <- readRDS(params$dados)
+teste <- sum(dados$beneficio == 0) == nrow(dados)
+
+if(!teste){
+  ampla <- which(dados$beneficio == 0)
+  ME25 <- which(dados$beneficio == 25)
+  ME80 <- which(dados$beneficio == 80)
+  idx <- c(ampla,ME25,ME80)
+  
+  dados_novos <- dados[idx,]
+  dados_novos$Item <- paste0(1:length(idx),' - ',(gsub("^.*? - ", "",dados_novos$Item)))
+  dados_novos$Quantidade
+  qtde <- as.numeric(gsub('\\.','', dados_novos$Quantidade))
+  qtde
+  ac <- qtde[1:length(ampla)] * dados_novos[1:length(ampla),9]
+  ac
+  total_ac <- paste0("R$ ",format(round(sum(ac),params$casas_decimais),
+                                  nsmall = params$casas_decimais, 
+                                  big.mark = ".", 
+                                  decimal.mark = ","))
+  
+  me <- qtde[(length(ampla)+1):nrow(dados_novos)] *dados_novos[(length(ampla)+1):nrow(dados_novos),9]
+  me
+  total_me <- paste0("R$ ",format(round(sum(me),
+                                        params$casas_decimais),
+                                  nsmall = params$casas_decimais, 
+                                  big.mark = ".", 
+                                  decimal.mark = ","))
+  
+  total <- paste0("R$ ",format(round(sum(ac)+sum(me),
+                                     params$casas_decimais),
+                               nsmall = params$casas_decimais, 
+                               big.mark = ".", 
+                               decimal.mark = ","))
+                  
+  df <- rbind(rep(c("","Ampla Concorrência"),c(6,1)),
+              dados_novos[1:length(ampla),-c(8,9)],
+              rep(c('','Total',total_ac),c(5,1,1)),
+              rep(c("","Exclusivo ME"),c(6,1)),
+              dados_novos[(length(ampla)+1):nrow(dados_novos),-c(8,9)],
+              rep(c('','Total',total_me),c(5,1,1)),
+              rep(c('','Total',total),c(5,1,1)))
+}else{
+  qtde <- as.numeric(gsub('\\.','', dados$Quantidade))
+  ac <- qtde * dados[,9]
+  total_ac <- paste0("R$ ",format(round(sum(ac),
+                                        params$casas_decimais),
+                                  nsmall = params$casas_decimais, 
+                                  big.mark = ".", 
+                                  decimal.mark = ","))
+                    
+  df <- rbind(dados[,-c(8,9)],
+              rep(c('','Total',total_ac),c(5,1,1)))
+}
+
+
+HTML(
+  kable(df, "html",
+        escape = FALSE,
+        align = c('l','c','c','c','c','c','c'),
+        col.names = c("Descrição",
+                      "Código<br>Elotech",
+                      "CATMAT",
+                      "Quantitativo",
+                      "Unidade<br>de<br>Medida",
+                      "Preço<br>Estimado",
+                      "Total"),
+        row.names=F)
+  %>%
+    kable_styling(, full_width = T) %>% as.character()
+  )
+
+
+```

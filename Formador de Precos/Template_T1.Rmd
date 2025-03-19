@@ -1,0 +1,45 @@
+---
+output: 
+  html_document: 
+    css: styles.css
+params:
+  dados: NULL
+  casas_decimais: 2
+---
+
+```{r setup,echo=F}
+library(shiny)
+library(shinyjs)
+library(dplyr)
+library(kableExtra)
+library(htmltools)
+
+dados <- readRDS(params$dados)
+larguras_px <- c("540px", "60px", "60px", "60px", "120px", "180px", "180px")
+HTML(
+            kable(dados, "html", 
+                  escape = FALSE, 
+                  align = "c",
+                  table.attr = 'style="border-collapse: collapse; width: 1200px; table-layout: fixed; margin: 0 auto;"',
+                  col.names = c("Item", "Preços (R$)<br>Fonte", "Média dos demais<br>Valores (R$)",
+                                "Razão (%)", "Avaliação", "Resumo Descritivo", "Método de<br>Avaliação")) %>%
+              kable_styling(bootstrap_options = "striped",
+                            html_font = 'calibri', 
+                            full_width = FALSE) %>%
+              column_spec(1:7, 
+                          width = larguras_px,
+                          extra_css = "border: 1px solid black !important; padding: 5px !important;") %>%
+              collapse_rows(
+                columns = c(1, 6, 7),
+                valign = "middle"
+              ) %>% 
+              row_spec(
+                0:nrow(dados),
+                extra_css = "border: 1px solid black !important;"
+              ) %>%  
+              add_footnote(
+                "Nota: M = Média, Md = Mediana, DP = Desvio Padrão, CV = Coeficiente de Variação",
+                notation = "none",
+                escape = FALSE,
+              ) %>% as.character())
+```
