@@ -695,7 +695,7 @@ server <- function(input, output, session){
       saveRDS(dados_relatorio2, temp_file2)
       
       # Renderizar relatório
-      output_dir <- choose.dir(default = "C:/Formador de Precos/resultados/") # Ou usar shinyFiles
+      output_dir <- C:/Formador de Precos/resultados/
       render(
         input = "C:\\Formador de Precos\\Template_T1.Rmd",
         output_file = paste0("Tabela_1_", input$csv1$name, ".html"),
